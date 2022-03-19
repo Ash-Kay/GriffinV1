@@ -2,9 +2,11 @@ package com.ashishkumars.griffin
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.ashishkumars.griffin.databinding.LayoutBlockingOverlayViewBinding
 
@@ -22,6 +24,7 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun showOverlay() {
         val mParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,

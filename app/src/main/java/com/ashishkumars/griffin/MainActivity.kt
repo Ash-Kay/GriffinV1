@@ -1,29 +1,42 @@
 package com.ashishkumars.griffin
 
 import android.app.Activity
-import android.content.Context
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.ashishkumars.griffin.Constants.NOTIF_CHANNEL_ID
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var globalWatcher: GlobalWatcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        createNotificationChannel()
         checkPermission()
-        initWatchers(applicationContext)
+        startForegroundService()
     }
 
-    private fun initWatchers(context: Context) {
-        globalWatcher = GlobalWatcher(context)
-        globalWatcher.startWatch()
+    private fun startForegroundService() {
+        val foregroundServiceIntent = Intent(this, ForegroundService::class.java)
+        ContextCompat.startForegroundService(this, foregroundServiceIntent)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(NOTIF_CHANNEL_ID, "ASH:ChannelName", importance)
+            channel.description = "ASH:ChannelDescription"
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     private var resultLauncher =
