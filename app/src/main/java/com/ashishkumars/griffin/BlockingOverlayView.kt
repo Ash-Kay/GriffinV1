@@ -3,12 +3,13 @@ package com.ashishkumars.griffin
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.ashishkumars.griffin.databinding.LayoutBlockingOverlayViewBinding
+
 
 class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     ConstraintLayout(context, attrs) {
@@ -24,14 +25,31 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun showOverlay() {
+        val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            WindowManager.LayoutParams.TYPE_PHONE
+        }
+
         val mParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            layoutFlag,
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.OPAQUE
         )
         windowManager.addView(binding.root, mParams)
+
+        binding.btnClose.isEnabled = false
+        object : CountDownTimer(30000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                println("ASHTEST: ${millisUntilFinished / 1000}")
+                binding.tvTimer.text = (millisUntilFinished / 1000).toString()
+            }
+
+            override fun onFinish() {
+                binding.btnClose.isEnabled = true
+            }
+        }.start()
     }
 
     fun closeOverlay() {

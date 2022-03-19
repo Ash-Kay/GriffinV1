@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.widget.Toast
+import timber.log.Timber
 
 class GlobalWatcher(private val context: Context) {
 
@@ -27,11 +27,10 @@ class GlobalWatcher(private val context: Context) {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action.equals(Intent.ACTION_USER_PRESENT)) {
-                println("ASHTEST: ScreenUnlocked")
-                Toast.makeText(context, "ScreenUnlocked", Toast.LENGTH_LONG).show()
+                Timber.d("ScreenUnlocked")
                 overlayView.showOverlay()
             } else if (intent.action.equals(Intent.ACTION_SCREEN_OFF)) {
-                println("ASHTEST: ScreenLocked")
+                Timber.d("ScreenLocked")
                 overlayView.closeOverlay()
             }
         }

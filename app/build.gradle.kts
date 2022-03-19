@@ -50,4 +50,11 @@ dependencies {
     implementation(Android.appcompat)
     implementation(Dependencies.materialDesign)
     implementation(Dependencies.constraintLayout)
+
+
+    /* ====================================================
+    *                    Utils/Others
+    * ===================================================*/
+
+    implementation(Timber.timber)
 }

@@ -9,6 +9,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.ashishkumars.griffin.Constants.NOTIF_CHANNEL_ID
 import com.ashishkumars.griffin.Constants.NOTIF_ID
+import timber.log.Timber
 
 class ForegroundService : Service() {
 
@@ -20,7 +21,7 @@ class ForegroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        println("ASHTEST: service started")
+        Timber.d("Service Started")
         if (isRunning)
             return START_STICKY
         isRunning = true
@@ -36,14 +37,13 @@ class ForegroundService : Service() {
         val pendingIntent =
             PendingIntent.getActivity(this, 0, openMainActivity, PendingIntent.FLAG_IMMUTABLE)
 
-        val notification = NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
+        return NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
             .setContentTitle("Griffin")
-            .setContentText("Service Running...")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            //.setContentText("Service Running...")
             .setContentIntent(pendingIntent)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
-        return notification
     }
 
     private fun initWatchers(context: Context) {
@@ -53,7 +53,8 @@ class ForegroundService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        println("ASHTEST: service destroyed")
+        Timber.d("Service Destroyed")
+        isRunning = false
         globalWatcher.stopWatch()
         stopForeground(true)
         stopSelf()
