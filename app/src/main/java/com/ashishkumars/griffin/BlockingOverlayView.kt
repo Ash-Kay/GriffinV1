@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.ashishkumars.griffin.databinding.LayoutBlockingOverlayViewBinding
-
+import timber.log.Timber
 
 class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     ConstraintLayout(context, attrs) {
@@ -18,11 +18,15 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
         LayoutBlockingOverlayViewBinding.inflate(LayoutInflater.from(context))
     private val windowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private var countDownTimer: CountDownTimer? = null
+
+    private val overlayBlockDurationInMs = 30000L
 
     init {
         binding.btnClose.setOnClickListener {
             closeOverlay()
         }
+        binding.circularProgress.max = overlayBlockDurationInMs.toInt()
     }
 
     fun showOverlay() {
@@ -39,21 +43,34 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
         )
         windowManager.addView(binding.root, mParams)
 
-        binding.btnClose.isEnabled = false
-        object : CountDownTimer(30000, 1000) {
+        Timber.d("Overlay shown")
+
+        // Don't disable button in debug mode
+        binding.btnClose.isEnabled = BuildConfig.DEBUG
+
+        countDownTimer = object : CountDownTimer(overlayBlockDurationInMs, 100) {
             override fun onTick(millisUntilFinished: Long) {
-                println("ASHTEST: ${millisUntilFinished / 1000}")
                 binding.tvTimer.text = (millisUntilFinished / 1000).toString()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    binding.circularProgress.setProgress(millisUntilFinished.toInt(), true)
+                } else {
+                    binding.circularProgress.progress = millisUntilFinished.toInt()
+                }
             }
 
             override fun onFinish() {
+                binding.circularProgress.progress = 0
                 binding.btnClose.isEnabled = true
+                closeOverlay()
             }
-        }.start()
+        }
+        countDownTimer?.start()
     }
 
     fun closeOverlay() {
         if (binding.root.parent != null) {
+            Timber.d("Overlay closed")
+            countDownTimer?.cancel()
             windowManager.removeView(binding.root)
         }
     }

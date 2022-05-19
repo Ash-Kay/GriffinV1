@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(NOTIF_CHANNEL_ID, "ASH:ChannelName", importance)
-            channel.description = "ASH:ChannelDescription"
+            val channel = NotificationChannel(NOTIF_CHANNEL_ID, "Main", importance)
+            channel.description = "Keeps app alive"
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }

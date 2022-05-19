@@ -47,6 +47,7 @@ dependencies {
     * ===================================================*/
 
     implementation(Android.coreKtx)
+    implementation(Android.activityKtx)
     implementation(Android.appcompat)
     implementation(Dependencies.materialDesign)
     implementation(Dependencies.constraintLayout)

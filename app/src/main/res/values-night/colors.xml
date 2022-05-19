@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Progress Bar -->
+    <color name="colorProgressBackground">@color/white</color>
+    <color name="colorProgressForeground">@color/black</color>
+</resources>
