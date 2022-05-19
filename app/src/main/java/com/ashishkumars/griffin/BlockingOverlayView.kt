@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.ashishkumars.griffin.databinding.LayoutBlockingOverlayViewBinding
+import com.ashishkumars.griffin.utils.SettingsManager
 import timber.log.Timber
 
 class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
@@ -19,17 +20,23 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
     private val windowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var countDownTimer: CountDownTimer? = null
-
-    private val overlayBlockDurationInMs = 30000L
+    private val settingsManager: SettingsManager
 
     init {
         binding.btnClose.setOnClickListener {
             closeOverlay()
         }
-        binding.circularProgress.max = overlayBlockDurationInMs.toInt()
+        settingsManager = SettingsManager(context)
     }
 
     fun showOverlay() {
+        closeOverlay()
+        val overlayBlockDurationInMs = (settingsManager.getDelay() * 1000).toLong()
+        binding.circularProgress.max = overlayBlockDurationInMs.toInt()
+        if (settingsManager.getIsDebugMode()) {
+            binding.btnClose.visibility = VISIBLE
+        }
+
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         } else {

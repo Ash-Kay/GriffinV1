@@ -87,6 +87,10 @@ object Facebook {
     private const val stethoVersion = "1.5.1"
     const val stetho = "com.facebook.stetho:stetho:${stethoVersion}"
     const val stethoNetwork = "com.facebook.stetho:stetho-okhttp3:${stethoVersion}"
+
+    const val flipper = "com.facebook.flipper:flipper:0.146.0"
+    const val flipperSoloader = "com.facebook.soloader:soloader:0.10.1"
+    const val flipperRelease = "com.facebook.flipper:flipper-noop:0.146.0"
 }
 
 object Glide {

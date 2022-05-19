@@ -8,20 +8,57 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.LayoutInflater
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.ashishkumars.griffin.Constants.NOTIF_CHANNEL_ID
+import androidx.core.widget.doOnTextChanged
+import com.ashishkumars.griffin.utils.Constants.NOTIF_CHANNEL_ID
+import com.ashishkumars.griffin.databinding.ActivityMainBinding
+import com.ashishkumars.griffin.utils.Constants
+import com.ashishkumars.griffin.utils.SettingsManager
+import com.ashishkumars.griffin.utils.SharedPreferenceManager
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var settingsManager: SettingsManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        setContentView(binding.root)
+
+        settingsManager = SettingsManager(this)
 
         createNotificationChannel()
         checkPermission()
         startForegroundService()
+        setupDelayDropDownMenu()
+        setupDebugSwitch()
+    }
+
+    private fun setupDebugSwitch() {
+        val currentMode = settingsManager.getIsDebugMode()
+        binding.switchDebugMode.isChecked = currentMode
+        binding.switchDebugMode.setOnCheckedChangeListener { _, isChecked ->
+            settingsManager.setIsDebugMode(isChecked)
+        }
+    }
+
+    private fun setupDelayDropDownMenu() {
+        val items = listOf(10, 20, 30, 60)
+        val adapter = ArrayAdapter(this, R.layout.item_delay_selector, items)
+        val currentDelay = settingsManager.getDelay()
+        binding.tvDelayPicker.setText(currentDelay.toString())
+        (binding.delayPickerLayout.editText as AutoCompleteTextView).setAdapter(adapter)
+
+        binding.delayPickerLayout.editText?.doOnTextChanged { text, _, _, _ ->
+            val delayInInt = text.toString().toIntOrNull() ?: items[0]
+            settingsManager.setDelay(delayInInt)
+        }
     }
 
     private fun startForegroundService() {

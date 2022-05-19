@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/drawable/circular_shape.xml" value="0.4825" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5447916666666667" />
         <entry key="app/src/main/res/layout/activity_screen_unlock_blocker.xml" value="0.30520833333333336" />
+        <entry key="app/src/main/res/layout/item_delay_selector.xml" value="0.5432291666666667" />
         <entry key="app/src/main/res/layout/layout_blocking_overlay_view.xml" value="0.5458333333333333" />
       </map>
     </option>

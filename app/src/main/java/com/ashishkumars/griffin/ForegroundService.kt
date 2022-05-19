@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.ashishkumars.griffin.Constants.NOTIF_CHANNEL_ID
-import com.ashishkumars.griffin.Constants.NOTIF_ID
+import com.ashishkumars.griffin.utils.Constants.NOTIF_CHANNEL_ID
+import com.ashishkumars.griffin.utils.Constants.NOTIF_ID
 import timber.log.Timber
 
 class ForegroundService : Service() {
