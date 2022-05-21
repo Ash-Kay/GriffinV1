@@ -20,6 +20,8 @@ import com.ashishkumars.griffin.databinding.ActivityMainBinding
 import com.ashishkumars.griffin.utils.Constants
 import com.ashishkumars.griffin.utils.SettingsManager
 import com.ashishkumars.griffin.utils.SharedPreferenceManager
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,8 +38,25 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
         checkPermission()
         startForegroundService()
-        setupDelayDropDownMenu()
         setupDebugSwitch()
+        setupTimePicker()
+    }
+
+    private fun setupTimePicker() {
+        with(binding.timePicker) {
+            val currentDelayInSec = settingsManager.getDelay()
+            val minutes = currentDelayInSec / 60
+            val seconds = currentDelayInSec % 60
+
+            hour = minutes
+            minute = seconds
+
+            setIs24HourView(true)
+            setOnTimeChangedListener { _, hourOfDay, minute ->
+                val delayInIntSec = hourOfDay * 60 + minute
+                settingsManager.setDelay(delayInIntSec)
+            }
+        }
     }
 
     private fun setupDebugSwitch() {
@@ -45,19 +64,6 @@ class MainActivity : AppCompatActivity() {
         binding.switchDebugMode.isChecked = currentMode
         binding.switchDebugMode.setOnCheckedChangeListener { _, isChecked ->
             settingsManager.setIsDebugMode(isChecked)
-        }
-    }
-
-    private fun setupDelayDropDownMenu() {
-        val items = listOf(10, 20, 30, 60)
-        val adapter = ArrayAdapter(this, R.layout.item_delay_selector, items)
-        val currentDelay = settingsManager.getDelay()
-        binding.tvDelayPicker.setText(currentDelay.toString())
-        (binding.delayPickerLayout.editText as AutoCompleteTextView).setAdapter(adapter)
-
-        binding.delayPickerLayout.editText?.doOnTextChanged { text, _, _, _ ->
-            val delayInInt = text.toString().toIntOrNull() ?: items[0]
-            settingsManager.setDelay(delayInInt)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.ashishkumars.griffin
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
@@ -7,10 +8,12 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.WindowManager
+import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.ashishkumars.griffin.databinding.LayoutBlockingOverlayViewBinding
 import com.ashishkumars.griffin.utils.SettingsManager
 import timber.log.Timber
+
 
 class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     ConstraintLayout(context, attrs) {
@@ -35,6 +38,8 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
         binding.circularProgress.max = overlayBlockDurationInMs.toInt()
         if (settingsManager.getIsDebugMode()) {
             binding.btnClose.visibility = VISIBLE
+        } else {
+            binding.btnClose.visibility = GONE
         }
 
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -51,23 +56,25 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
         windowManager.addView(binding.root, mParams)
 
         Timber.d("Overlay shown")
+        println("ASHTEST: OVerlay shown")
 
         // Don't disable button in debug mode
         binding.btnClose.isEnabled = BuildConfig.DEBUG
 
+        val progressAnimator = ObjectAnimator.ofInt(binding.circularProgress, "progress", overlayBlockDurationInMs.toInt(), 0)
+        progressAnimator.duration = overlayBlockDurationInMs
+        progressAnimator.interpolator = LinearInterpolator()
+        progressAnimator.start()
+
         countDownTimer = object : CountDownTimer(overlayBlockDurationInMs, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 binding.tvTimer.text = (millisUntilFinished / 1000).toString()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    binding.circularProgress.setProgress(millisUntilFinished.toInt(), true)
-                } else {
-                    binding.circularProgress.progress = millisUntilFinished.toInt()
-                }
             }
 
             override fun onFinish() {
                 binding.circularProgress.progress = 0
                 binding.btnClose.isEnabled = true
+                println("ASHTEST: OVerlay finished and closed")
                 closeOverlay()
             }
         }

@@ -11,4 +11,6 @@
     <color name="colorProgressBackground">#dbdbdb</color>
     <color name="colorProgressForeground">#595959</color>
     <color name="colorProgressText">#595959</color>
+
+    <color name="textColor">#595959</color>
 </resources>
