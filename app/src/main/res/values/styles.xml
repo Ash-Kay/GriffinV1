@@ -12,7 +12,7 @@
     </style>
 
     <style name="Griffin.TextCardTitle" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorTextDark</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>

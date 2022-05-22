@@ -12,6 +12,7 @@
     <color name="colorProgressForeground">#595959</color>
     <color name="colorProgressText">#595959</color>
 
-    <color name="colorTextGrey">#434346</color>
+    <color name="colorTextGrey">#757474</color>
+    <color name="colorTextDark">#303030</color>
     <color name="colorCardStroke">#BABABA</color>
 </resources>

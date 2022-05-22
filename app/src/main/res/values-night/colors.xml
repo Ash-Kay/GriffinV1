@@ -3,4 +3,8 @@
     <!-- Progress Bar -->
     <color name="colorProgressBackground">@color/white</color>
     <color name="colorProgressForeground">@color/black</color>
+
+    <color name="colorTextGrey">#757474</color>
+    <color name="colorTextDark">#D6D6D6</color>
+    <color name="colorCardStroke">#BABABA</color>
 </resources>
