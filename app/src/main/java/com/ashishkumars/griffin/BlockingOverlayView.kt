@@ -56,7 +56,6 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
         windowManager.addView(binding.root, mParams)
 
         Timber.d("Overlay shown")
-        println("ASHTEST: OVerlay shown")
 
         // Don't disable button in debug mode
         binding.btnClose.isEnabled = BuildConfig.DEBUG
@@ -74,7 +73,6 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
             override fun onFinish() {
                 binding.circularProgress.progress = 0
                 binding.btnClose.isEnabled = true
-                println("ASHTEST: OVerlay finished and closed")
                 closeOverlay()
             }
         }

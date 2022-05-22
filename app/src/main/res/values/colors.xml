@@ -8,9 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="colorProgressBackground">#dbdbdb</color>
+    <color name="colorProgressBackground">#DBDBDB</color>
     <color name="colorProgressForeground">#595959</color>
     <color name="colorProgressText">#595959</color>
 
-    <color name="textColor">#595959</color>
+    <color name="colorTextGrey">#434346</color>
+    <color name="colorCardStroke">#BABABA</color>
 </resources>

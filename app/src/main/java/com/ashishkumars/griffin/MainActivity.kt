@@ -1,27 +1,24 @@
 package com.ashishkumars.griffin
 
-import android.app.Activity
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
+import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.widget.doOnTextChanged
-import com.ashishkumars.griffin.utils.Constants.NOTIF_CHANNEL_ID
 import com.ashishkumars.griffin.databinding.ActivityMainBinding
-import com.ashishkumars.griffin.utils.Constants
+import com.ashishkumars.griffin.utils.Constants.NOTIF_CHANNEL_ID
 import com.ashishkumars.griffin.utils.SettingsManager
-import com.ashishkumars.griffin.utils.SharedPreferenceManager
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,20 +33,45 @@ class MainActivity : AppCompatActivity() {
         settingsManager = SettingsManager(this)
 
         createNotificationChannel()
-        checkPermission()
+        checkOverlayPermission()
+        checkPhoneStatePermission()
         startForegroundService()
         setupDebugSwitch()
         setupTimePicker()
+
+        binding.btnOverlayGrantPermission.setOnClickListener {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            overlayPermissionResultLauncher.launch(intent)
+        }
+
+        binding.btnPhoneGrantPermission.setOnClickListener {
+            phonePermissionResultLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkOverlayPermission()
     }
 
     private fun setupTimePicker() {
         with(binding.timePicker) {
             val currentDelayInSec = settingsManager.getDelay()
-            val minutes = currentDelayInSec / 60
-            val seconds = currentDelayInSec % 60
+            val mMinutes = currentDelayInSec / 60
+            val mSeconds = currentDelayInSec % 60
 
-            hour = minutes
-            minute = seconds
+            // Set delay for first launch
+            if (mMinutes == 0 && mSeconds == 0) {
+                hour = 0
+                minute = 10
+                settingsManager.setDelay(10)
+            } else {
+                hour = mMinutes
+                minute = mSeconds
+            }
 
             setIs24HourView(true)
             setOnTimeChangedListener { _, hourOfDay, minute ->
@@ -82,20 +104,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var resultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                println("ASHTEST: got permission")
+    private var phonePermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                checkPhoneStatePermission()
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+                    Toast.makeText(this, "Phone permission Not Given!", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Allow Phone permission form settings!", Toast.LENGTH_LONG).show()
+
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.parse("package:$packageName")
+                    intent.data = uri
+                    startActivity(intent)
+                }
             }
         }
 
-    private fun checkPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            resultLauncher.launch(intent)
+    private var overlayPermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+
+    private fun checkOverlayPermission() {
+        if (Settings.canDrawOverlays(this)) {
+            binding.sectionOverlayPermission.visibility = View.GONE
+        } else {
+            binding.sectionOverlayPermission.visibility = View.VISIBLE
+        }
+    }
+
+    private fun checkPhoneStatePermission() {
+        if (applicationContext.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            binding.sectionPhonePermission.visibility = View.VISIBLE
+        } else {
+            binding.sectionPhonePermission.visibility = View.GONE
         }
     }
 }
