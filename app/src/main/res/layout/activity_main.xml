@@ -59,6 +59,8 @@
                     android:text="@string/desc_overlay_permission"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnOverlayGrantPermission"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintTop_toBottomOf="@+id/tvOverlaySectionTitle" />
 
                 <com.google.android.material.button.MaterialButton
@@ -104,6 +106,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/desc_phone_permission"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnPhoneGrantPermission"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPhoneSectionTitle" />
 
