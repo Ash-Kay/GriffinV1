@@ -82,10 +82,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupDebugSwitch() {
-        val currentMode = settingsManager.getIsDebugMode()
-        binding.switchDebugMode.isChecked = currentMode
-        binding.switchDebugMode.setOnCheckedChangeListener { _, isChecked ->
-            settingsManager.setIsDebugMode(isChecked)
+        if (BuildConfig.DEBUG) {
+            val currentMode = settingsManager.getIsDebugMode()
+            binding.switchDebugMode.isChecked = currentMode
+            binding.switchDebugMode.setOnCheckedChangeListener { _, isChecked ->
+                settingsManager.setIsDebugMode(isChecked)
+            }
+        } else {
+            binding.sectionDebugSwitch.visibility = View.GONE
         }
     }
 
