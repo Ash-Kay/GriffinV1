@@ -54,7 +54,7 @@
                 <TextView
                     android:id="@+id/tvOverlaySectionDescription"
                     style="@style/Griffin.TextCardDescription"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/desc_overlay_permission"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -102,7 +102,7 @@
                 <TextView
                     android:id="@+id/tvPhoneSectionDescription"
                     style="@style/Griffin.TextCardDescription"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/desc_phone_permission"
                     app:layout_constraintBottom_toBottomOf="parent"
