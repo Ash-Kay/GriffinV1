@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.PowerManager
 import android.telephony.TelephonyManager
+import androidx.core.content.ContextCompat.getSystemService
 import timber.log.Timber
 
 class GlobalWatcher(private val context: Context) {
@@ -26,6 +28,7 @@ class GlobalWatcher(private val context: Context) {
 
     inner class GlobalBroadcastReceiver : BroadcastReceiver() {
         private val overlayView = BlockingOverlayView(context)
+        private val powerManager = getSystemService(context, PowerManager::class.java)
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action.equals(Intent.ACTION_USER_PRESENT)) {
@@ -33,7 +36,9 @@ class GlobalWatcher(private val context: Context) {
                 overlayView.showOverlay()
             } else if (intent.action.equals(Intent.ACTION_SCREEN_OFF)) {
                 Timber.d("ScreenLocked")
-                overlayView.closeOverlay()
+                if (powerManager?.isInteractive == false) {
+                    overlayView.closeOverlay()
+                }
             } else if (intent.action.equals(TelephonyManager.ACTION_PHONE_STATE_CHANGED)) {
                 if (intent.extras?.get("state") == TelephonyManager.EXTRA_STATE_RINGING) {
                     Timber.d("PhoneRinging")
