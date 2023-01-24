@@ -1,5 +1,6 @@
 package com.ashishkumars.griffin
 
+import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ class GlobalWatcher(private val context: Context) {
     private val receiver = GlobalBroadcastReceiver()
     private val filter = IntentFilter().also {
         it.addAction(Intent.ACTION_USER_PRESENT)
+        it.addAction(Intent.ACTION_SCREEN_ON)
         it.addAction(Intent.ACTION_SCREEN_OFF)
         it.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
     }
@@ -32,8 +34,14 @@ class GlobalWatcher(private val context: Context) {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action.equals(Intent.ACTION_USER_PRESENT)) {
-                Timber.d("ScreenUnlocked")
+                Timber.d("ScreenUnlocked-KeyGuard unlocked User present")
                 overlayView.showOverlay()
+            } else if (intent.action.equals(Intent.ACTION_SCREEN_ON)) {
+                val keyguardManager = getSystemService(context, KeyguardManager::class.java)
+                if (keyguardManager != null && keyguardManager.isDeviceLocked.not()) {
+                    Timber.d("ScreenUnlocked-KeyGuard was not locked")
+                    overlayView.showOverlay()
+                }
             } else if (intent.action.equals(Intent.ACTION_SCREEN_OFF)) {
                 Timber.d("ScreenLocked")
                 if (powerManager?.isInteractive == false) {
