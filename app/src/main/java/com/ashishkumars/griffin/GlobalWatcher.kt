@@ -28,19 +28,30 @@ class GlobalWatcher(private val context: Context) {
         context.unregisterReceiver(receiver)
     }
 
+    var screenUnlockTime: Long = 0L
+    fun checkDebounce(): Boolean {
+        return System.currentTimeMillis() - screenUnlockTime > 1_000
+    }
+
     inner class GlobalBroadcastReceiver : BroadcastReceiver() {
         private val overlayView = BlockingOverlayView(context)
         private val powerManager = getSystemService(context, PowerManager::class.java)
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action.equals(Intent.ACTION_USER_PRESENT)) {
-                Timber.d("ScreenUnlocked-KeyGuard unlocked User present")
-                overlayView.showOverlay()
+                if (checkDebounce()) {
+                    Timber.d("ScreenUnlocked-KeyGuard unlocked User present")
+                    overlayView.showOverlay()
+                    screenUnlockTime = System.currentTimeMillis()
+                }
             } else if (intent.action.equals(Intent.ACTION_SCREEN_ON)) {
                 val keyguardManager = getSystemService(context, KeyguardManager::class.java)
                 if (keyguardManager != null && keyguardManager.isDeviceLocked.not()) {
-                    Timber.d("ScreenUnlocked-KeyGuard was not locked")
-                    overlayView.showOverlay()
+                    if (checkDebounce()) {
+                        Timber.d("ScreenUnlocked-KeyGuard was not locked")
+                        overlayView.showOverlay()
+                        screenUnlockTime = System.currentTimeMillis()
+                    }
                 }
             } else if (intent.action.equals(Intent.ACTION_SCREEN_OFF)) {
                 Timber.d("ScreenLocked")
