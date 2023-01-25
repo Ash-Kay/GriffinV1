@@ -26,9 +26,9 @@ class ForegroundService : Service() {
             return START_STICKY
         isRunning = true
 
+        initWatchers(this)
         val notification = createNotification()
         startForeground(NOTIF_ID, notification)
-        initWatchers(this)
         return START_STICKY
     }
 

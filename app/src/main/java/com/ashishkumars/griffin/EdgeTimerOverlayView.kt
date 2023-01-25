@@ -1,6 +1,5 @@
 package com.ashishkumars.griffin
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
@@ -8,41 +7,32 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.WindowManager
-import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.ashishkumars.griffin.databinding.LayoutBlockingOverlayViewBinding
+import com.ashishkumars.griffin.databinding.LayoutEdgeTimerOverlayViewBinding
 import com.ashishkumars.griffin.utils.SettingsManager
 import timber.log.Timber
 
 
-class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+class EdgeTimerOverlayView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) :
     ConstraintLayout(context, attrs) {
 
-    private val binding: LayoutBlockingOverlayViewBinding =
-        LayoutBlockingOverlayViewBinding.inflate(LayoutInflater.from(context))
+    private val binding: LayoutEdgeTimerOverlayViewBinding =
+        LayoutEdgeTimerOverlayViewBinding.inflate(LayoutInflater.from(context))
     private val windowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var countDownTimer: CountDownTimer? = null
     private val settingsManager: SettingsManager
 
-    lateinit var edgeTimerOverlayView: EdgeTimerOverlayView
-
     init {
-        binding.btnClose.setOnClickListener {
-            closeOverlay()
-        }
         settingsManager = SettingsManager(context)
     }
 
     fun showOverlay() {
         closeOverlay()
-        val overlayBlockDurationInMs = (settingsManager.getDelay() * 1000).toLong()
-        binding.circularProgress.max = overlayBlockDurationInMs.toInt()
-        if (settingsManager.getIsDebugMode()) {
-            binding.btnClose.visibility = VISIBLE
-        } else {
-            binding.btnClose.visibility = GONE
-        }
+        val overlayBlockDurationInMs = (settingsManager.getEdgeTimerDuration() * 1000).toLong()
 
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -52,29 +42,20 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
 
         val mParams = WindowManager.LayoutParams(
             layoutFlag,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.OPAQUE
+            4719416,
+            PixelFormat.TRANSLUCENT
         )
         windowManager.addView(binding.root, mParams)
 
         Timber.d("Overlay shown")
 
-        // Don't disable button in debug mode
-        binding.btnClose.isEnabled = BuildConfig.DEBUG
-
-        val progressAnimator = ObjectAnimator.ofInt(binding.circularProgress, "progress", overlayBlockDurationInMs.toInt(), 0)
-        progressAnimator.duration = overlayBlockDurationInMs
-        progressAnimator.interpolator = LinearInterpolator()
-        progressAnimator.start()
+        binding.edgeTimerView.duration = overlayBlockDurationInMs
 
         countDownTimer = object : CountDownTimer(overlayBlockDurationInMs, 100) {
             override fun onTick(millisUntilFinished: Long) {
-                binding.tvTimer.text = (millisUntilFinished / 1000).toString()
             }
 
             override fun onFinish() {
-                binding.circularProgress.progress = 0
-                binding.btnClose.isEnabled = true
                 closeOverlay()
             }
         }
@@ -86,7 +67,6 @@ class BlockingOverlayView @JvmOverloads constructor(context: Context, attrs: Att
             Timber.d("Overlay closed")
             countDownTimer?.cancel()
             windowManager.removeView(binding.root)
-            edgeTimerOverlayView.showOverlay()
         }
     }
 }

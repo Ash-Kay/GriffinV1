@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
                 hour = 0
                 minute = 10
                 settingsManager.setDelay(10)
+                settingsManager.setEdgeTimerDuration(60)
             } else {
                 hour = mMinutes
                 minute = mSeconds

@@ -34,8 +34,13 @@ class GlobalWatcher(private val context: Context) {
     }
 
     inner class GlobalBroadcastReceiver : BroadcastReceiver() {
+        private val edgeView = EdgeTimerOverlayView(context)
         private val overlayView = BlockingOverlayView(context)
         private val powerManager = getSystemService(context, PowerManager::class.java)
+
+        init {
+            overlayView.edgeTimerOverlayView = edgeView
+        }
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action.equals(Intent.ACTION_USER_PRESENT)) {
@@ -57,11 +62,13 @@ class GlobalWatcher(private val context: Context) {
                 Timber.d("ScreenLocked")
                 if (powerManager?.isInteractive == false) {
                     overlayView.closeOverlay()
+                    edgeView.closeOverlay()
                 }
             } else if (intent.action.equals(TelephonyManager.ACTION_PHONE_STATE_CHANGED)) {
                 if (intent.extras?.get("state") == TelephonyManager.EXTRA_STATE_RINGING) {
                     Timber.d("PhoneRinging")
                     overlayView.closeOverlay()
+                    edgeView.closeOverlay()
                 }
             }
         }
