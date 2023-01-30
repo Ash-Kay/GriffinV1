@@ -14,15 +14,12 @@ import timber.log.Timber
 
 
 class EdgeTimerOverlayView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null
-) :
-    ConstraintLayout(context, attrs) {
+    context: Context, attrs: AttributeSet? = null
+) : ConstraintLayout(context, attrs) {
 
     private val binding: LayoutEdgeTimerOverlayViewBinding =
         LayoutEdgeTimerOverlayViewBinding.inflate(LayoutInflater.from(context))
-    private val windowManager =
-        context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var countDownTimer: CountDownTimer? = null
     private val settingsManager: SettingsManager
 
@@ -32,6 +29,7 @@ class EdgeTimerOverlayView @JvmOverloads constructor(
 
     fun showOverlay() {
         closeOverlay()
+        settingsManager.setEdgeTimerDuration(10)
         val overlayBlockDurationInMs = (settingsManager.getEdgeTimerDuration() * 1000).toLong()
 
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -42,7 +40,7 @@ class EdgeTimerOverlayView @JvmOverloads constructor(
 
         val mParams = WindowManager.LayoutParams(
             layoutFlag,
-            4719416,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             PixelFormat.TRANSLUCENT
         )
         windowManager.addView(binding.root, mParams)
@@ -66,6 +64,7 @@ class EdgeTimerOverlayView @JvmOverloads constructor(
         if (binding.root.parent != null) {
             Timber.d("Overlay closed")
             countDownTimer?.cancel()
+            binding.edgeTimerView.clean()
             windowManager.removeView(binding.root)
         }
     }
