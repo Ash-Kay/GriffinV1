@@ -60,3 +60,5 @@ class ForegroundService : Service() {
         stopSelf()
     }
 }
+
+//adb shell am start-foreground-service com.ashishkumars.griffin/.ForegroundService

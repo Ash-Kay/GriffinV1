@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">Griffin</string>
     <string name="description_minute_second">Minute : Second</string>
+    <string name="description_seconds">Seconds</string>
     <string name="title_phone_permission">Phone Permission</string>
     <string name="title_overlay_permission">Overlay Permission</string>
     <string name="desc_overlay_permission">Used to show blocking overlay</string>
     <string name="cta_permission_grant">Grant</string>
     <string name="desc_phone_permission">Used to hide overlay on incoming call</string>
-    <string name="title_delay_selector_section">Select Screen Unlock Delay Duration</string>
+    <string name="title_delay_selector_section">Select Screen Block Duration</string>
     <string name="label_switch_debug">Enable Debug Mode</string>
-    <string name="description_time_picker">Select time in minute : second for which phone unlock will be delayed</string>
+    <string name="description_time_picker">Select time in seconds for which phone will be blocked after unlock</string>
 </resources>

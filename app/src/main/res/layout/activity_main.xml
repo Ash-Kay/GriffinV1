@@ -58,9 +58,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/desc_overlay_permission"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btnOverlayGrantPermission"
                     app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvOverlaySectionTitle" />
 
                 <com.google.android.material.button.MaterialButton
@@ -151,12 +151,11 @@
                     android:layout_height="wrap_content"
                     android:text="@string/description_time_picker" />
 
-                <TimePicker
+                <NumberPicker
                     android:id="@+id/timePicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:timePickerMode="spinner" />
+                    android:layout_gravity="center" />
 
                 <TextView
                     android:id="@+id/labelTimePicker"
@@ -164,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/description_minute_second" />
+                    android:text="@string/description_seconds" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
