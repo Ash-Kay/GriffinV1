@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="Griffin.PrimaryButton" parent="Widget.MaterialComponents.Button">
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
@@ -13,18 +12,19 @@
 
     <style name="Griffin.TextCardTitle" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">@color/colorTextDark</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/lexenddecamedium</item>
     </style>
 
     <style name="Griffin.TextCardDescription" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">@color/colorTextGrey</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/lexenddecalight</item>
     </style>
 
     <style name="Griffin.FlatCard" parent="Widget.MaterialComponents.CardView">
         <item name="cardElevation">0dp</item>
         <item name="strokeColor">@color/colorCardStroke</item>
-        <item name="strokeWidth">1dp</item>
+        <item name="strokeWidth">2dp</item>
     </style>
 </resources>

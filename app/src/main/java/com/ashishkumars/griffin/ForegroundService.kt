@@ -55,7 +55,7 @@ class ForegroundService : Service() {
         super.onDestroy()
         Timber.d("Service Destroyed")
         isRunning = false
-        globalWatcher.stopWatch()
+        globalWatcher?.stopWatch()
         stopForeground(true)
         stopSelf()
     }
